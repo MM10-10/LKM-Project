@@ -1,0 +1,7 @@
+# Ignore object files and generated files
+*.o
+*.ko
+*.mod
+*.cmd
+*.order
+*.symvers
