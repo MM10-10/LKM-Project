@@ -98,17 +98,19 @@ struct file_operations fops = {
 };
 
 static int __init CharDevMod_init(void) {
-    major = register_chrdev(0, DEVICE_NAME, &fops);
-    struct proc_dir_entry *entry_stats;
-    struct proc_dir_entry *entry;
+    major = register_chrdev(0, DEVICE_NAME, &fops); // register the device
+    struct proc_dir_entry *entry_stats; // create proc stats
+    struct proc_dir_entry *entry; // create proc
 
+    // name, permissions read and write, root of /proc filesystem, struct
     entry = proc_create("myprocfile", 0666, NULL, &proc_fops);
     if (!entry) {
         printk(KERN_INFO "Failed to create /proc/myprocfile\n");
-        return -ENOMEM;
+        return -ENOMEM; // out of memory
     }
     printk(KERN_INFO "/proc/myprocfile created\n");
 
+    // name, read only, root of /proc filesystem, struct 
     entry_stats = proc_create("myprocfile_stats", 0444, NULL, &proc_fops_stats);
     if (!entry_stats) {
         printk(KERN_INFO "Failed to create /proc/myprocfile_stats\n");
