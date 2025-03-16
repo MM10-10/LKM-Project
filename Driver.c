@@ -1,12 +1,12 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/fs.h>
-#include <linux/uaccess.h>
-#include <linux/ioctl.h>
-#include <linux/mutex.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
+#include <linux/module.h> // provides macros/functions for init,cleanup,etc
+#include <linux/kernel.h> // provides functions such as printk
+#include <linux/init.h> // init/exit 
+#include <linux/fs.h> // provides structures and functions for working with files,etc
+#include <linux/uaccess.h> // functions for user to kernel data copy etc
+#include <linux/ioctl.h> // input/output
+#include <linux/mutex.h> // mutexes
+#include <linux/proc_fs.h> // /proc filesystem
+#include <linux/seq_file.h> 
 
 #define DEVICE_NAME "CharDevModule"
 
@@ -15,51 +15,54 @@ MODULE_AUTHOR("HARRY KIKKERS, MAHDI MIRZAY, CONOR MCCARTHY");
 MODULE_DESCRIPTION("Our kernel module");
 MODULE_VERSION("1.0");
 
-static int major;
+static int major; // major number 
 static int device_open_counter = 0;
 static ssize_t total_bytes_read = 0;
 static ssize_t total_bytes_written = 0;
 
-static DEFINE_MUTEX(device_mutex);
+static DEFINE_MUTEX(device_mutex); // create mutex
 
 static int device_open(struct inode *inode, struct file *file);
 static int device_release(struct inode *inode, struct file *file);
 static ssize_t device_read(struct file *file, char __user *buf, size_t count, loff_t *offset);
 static ssize_t device_write(struct file *file, const char __user *buf, size_t count, loff_t *offset);
 
-struct device_stats {
+struct device_stats { // new struct for stats
     int device_opens;
     ssize_t total_bytes_read;
     ssize_t total_bytes_written;
 };
 
+// pointer to file, pointer to buffer in user space, num bytes, pointer to file to be wrote
 static ssize_t procfile_write(struct file *file, const char __user *buffer, size_t len, loff_t *off) {
-    char buf[1000];
+    char buf[1000]; // buffer 
 
     if (len > 99) {
-        return -EINVAL;
+        return -EINVAL; // invalid argument 
     }
     if (copy_from_user(buf, buffer, len)) {
-        return -EFAULT;
+        return -EFAULT; // bad address if copy fails
     }
 
-    buf[len] = '\0';
+    buf[len] = '\0'; 
 
     printk(KERN_INFO "Received from user: %s\n", buf);
 
     return len;
 }
 
+// pointer to seq_file structure, pointer to priv data 
 static int procfile_showstats(struct seq_file *m, void *v) {
     seq_printf(m, "Device Statistics:\n");
     seq_printf(m, "Device Opens: %d\n", device_open_counter);
     seq_printf(m, "Total Bytes Read: %zd\n", total_bytes_read);
     seq_printf(m, "Total Bytes Written: %zd\n", total_bytes_written);
-    return 0;
+    return 0; // success 
 }
 
+// inode of procfile with mdata, file being opened
 static int procfile_open_stats(struct inode *inode, struct file *file) {
-    return single_open(file, procfile_showstats, NULL);
+    return single_open(file, procfile_showstats, NULL); 
 }
 
 static int procfile_show(struct seq_file *m, void *v) {
@@ -126,9 +129,9 @@ static int __init CharDevMod_init(void) {
 }
 
 static void __exit CharDevMod_exit(void) {
-    unregister_chrdev(major, DEVICE_NAME);
-    remove_proc_entry("myprocfile", NULL);
-    remove_proc_entry("myprocfile_stats", NULL);
+    unregister_chrdev(major, DEVICE_NAME); // unregister device with major number
+    remove_proc_entry("myprocfile", NULL); // remove procfile 
+    remove_proc_entry("myprocfile_stats", NULL); // remove procfile
     printk(KERN_INFO "/proc/myprocfile removed\n");
     printk(KERN_INFO "/proc/myprocfile_stats removed\n");
     printk(KERN_INFO "Unregistered device\n");
