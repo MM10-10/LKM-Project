@@ -1,4 +1,4 @@
-obj-m += Sample-Driver.o
+obj-m += mouse_driver.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
