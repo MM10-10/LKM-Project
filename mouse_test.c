@@ -15,7 +15,7 @@ pthread_cond_t ev_cond = PTHREAD_COND_INITIALIZER;  // condition variable for ev
 // flag to signal program termination
 volatile sig_atomic_t terminate = 0;
 
-//signal handler to handle termination (like ctrl+c)
+// signal handler to handle termination (e.g., ctrl+c)
 void handle_signal(int sig) {
     terminate = 1;  // set the termination flag to true
 }
