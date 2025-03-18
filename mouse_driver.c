@@ -1,4 +1,3 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          mouse_driver.c                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -16,8 +15,8 @@
 #define BUFFER_SIZE 1024
 #define URB_BUFFER_SIZE 64
 
-#define DEVICE_VENDOR_ID 0x248a   // Vendor ID (Maxxter)
-#define DEVICE_PRODUCT_ID 0x8366  // Product ID (ACT-MUSW-002)
+#define DEVICE_VENDOR_ID 0x1c4f   // Vendor ID (SiGma Micro)
+#define DEVICE_PRODUCT_ID 0x0034  // Product ID (specific device model)
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("MAHDI, HARRY, CONOR");
@@ -275,7 +274,7 @@ static int mouse_raw_event(struct hid_device *hdev, struct hid_report *report, u
     int buttons;
     int x_delta;
     int y_delta;
-    unsigned int available;  // Move the declaration here
+    unsigned int available;  
 
     if (size < 3) {
         return 0;  // Return if invalid data size
@@ -289,7 +288,7 @@ static int mouse_raw_event(struct hid_device *hdev, struct hid_report *report, u
     input_report_rel(mouse_input, REL_Y, y_delta);  // Report Y movement
     input_sync(mouse_input);  // Sync input data
 
-    available = BUFFER_SIZE - buffer_data_size;  // Now use it here
+    available = BUFFER_SIZE - buffer_data_size; 
 
     // Track button presses and update buffer
     if (buttons & (1 << 0)) {
