@@ -15,8 +15,8 @@
 #define BUFFER_SIZE 1024
 #define URB_BUFFER_SIZE 64
 
-#define DEVICE_VENDOR_ID 0x1c4f   // Vendor ID (SiGma Micro)
-#define DEVICE_PRODUCT_ID 0x0034  // Product ID (specific device model)
+#define DEVICE_VENDOR_ID 0x248a   // Vendor ID (Maxxter) 
+#define DEVICE_PRODUCT_ID 0x8366  // Product ID (ACT-MUSW-002)
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("MAHDI, HARRY, CONOR");
